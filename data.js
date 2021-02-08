@@ -88,59 +88,23 @@
 
 const btn1=document.getElementById("reposbtn1");
 btn1.addEventListener("click",getRepo)
-
-function getarr()
-{
- return ['C',1]   
-}
 function draw(mymap)
 {
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
-   async function drawChart() {
-    // var data = google.visualization.arrayToDataTable([
-    //     ['Task' , 'Hours Per Day'],
-    //     ['C' , 13829],
-    //     ['C++' , 23288],
-    //     ['CSS' , 14088],
-    //     ['HTML' , 13966],
-    //     ['Java' , 327940],
-    //     ['JavaScript' , 35245],
-    //     ['Pug' , 275],
-    //     ['Python' , 2694]
-    // ]);
+    async function drawChart() {
+  
     const t2darr=await Object.keys(mymap).map((ele)=>{
         const arr=[ele,mymap[ele]]
         return arr
     }
     )
-    console.log(t2darr)
-    
-    // const para=async()=>{
-    //     const arr=[
-    //         ['Task' , 'Hours Per Day'],     
-    //     ];
-    //     await t2darr.map((ele)=>{
-    //         arr.push(ele)
-    //     })
-    //     return arr
-    // }
-    // for(i=0;i<t2darr.length;i++)
-    // para.push(t2darr[i])
+   
     const para=await t2darr.map((ele)=>{
         return ele
     })
-    para.unshift(['Task','Hours Per day'])
-    console.log(para)
+    para.unshift(['Task',' Hours Per Day'])
     var data = google.visualization.arrayToDataTable(para);
-    // var data = google.visualization.arrayToDataTable([
-    //     ['Task', 'Hours per Day'],
-    //     ['Work',     11],
-    //     ['Eat',      2],
-    //     ['Commute',  2],
-    //     ['Watch TV', 2],
-    //     ['Sleep',    7]
-    //   ]);
     var options = {
         title: 'Languages used by Me'
       };

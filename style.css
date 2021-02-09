@@ -4,10 +4,18 @@
     max-height:150px;
     display:block;
     margin:0 auto;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
-/* #piechart1
+body{
+    background-image:url('./images/background.jpg');
+    overflow-x: hidden;
+}
+ .white
 {
-    height:1100px;
-    width:100%;
-    margin:0 auto;
-} */
+    color:#fff;
+}
+.heading
+{
+    color:#fff;
+}

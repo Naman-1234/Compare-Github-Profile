@@ -19,31 +19,48 @@ btn2.addEventListener("click",()=>{
 
 
 
-function draw1(mymap,index)
+async function draw1(mymap,index)
 {
+    console.log("Mymap in draw",mymap,index);
     google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
+    await google.charts.setOnLoadCallback(drawChart);
+    
+    
+    
+    
     async function drawChart() {
-  
-    const t2darr=await Object.keys(mymap).map((ele)=>{
+        
+    var t2darr=await Object.keys(mymap).map((ele)=>{
         const arr=[ele,mymap[ele]]
         return arr
     }
     )
    
-    const para=await t2darr.map((ele)=>{
+    var para=await t2darr.map((ele)=>{
         return ele
     })
+    console.log(para,t2darr);
     para.unshift(['Task',' Hours Per Day'])
     var data = google.visualization.arrayToDataTable(para);
     var options = {
-        title: 'Languages used '
+        title: 'Languages used ',
+        is3D:true,
+        backgroundColor:'none',
+        legend:{
+            textstyle:{
+                color:'white'
+            }
+        }
       };
       var chart = new google.visualization.PieChart(document.getElementById(`piechart${index}`));
 
         chart.draw(data, options);
     }
   
+
+
+
+    
 }
 
 async function getFollowers(element,url)
@@ -57,12 +74,16 @@ async function getFollowers(element,url)
         res=JSON.parse(res)
         //* Bcoz we are only interested in finding number of followers and not their additional thing
         res=res.length
-        element.appendChild(document.createTextNode(`Total Number of followers=${res}`))
+        var span=document.createElement('span')
+        span.classList.add('white')
+        span.appendChild(document.createTextNode(`Total Number of followers=${res}`))
+        element.appendChild(document.createElement('br'))
+        element.appendChild(span)
         element.appendChild(document.createElement('br'))
     }
-    xhr.send()
-    
+    xhr.send()   
 }
+
 async function getFollowing(element,url)
 {
     const xhr=new XMLHttpRequest();
@@ -79,6 +100,7 @@ async function getFollowing(element,url)
     }
     xhr.send()
 }
+
 async function afterload(name,value,res,index)
 {
     // var res=this.response;
@@ -107,31 +129,27 @@ async function afterload(name,value,res,index)
             xhr.send()
         }
     });
+    console.log(mymap);
     await draw1(mymap,index)
     const parent=name.parentElement;
     console.log("Parent is",parent);
     const followers=await getFollowers(parent,res[0].owner.followers_url)
-//     const firstdiv=document.getElementsByClassName('firstInput')[0];
-//     const src=res[0].owner.avatar_url;
-//     const imgTag=document.createElement('img')
-//     imgTag.src=src;
-//     imgTag.classList.add('img-fluid')
-//     imgTag.classList.add('img-responsive')
-//     imgTag.classList.add('circularimage')
-//     imgTag.classList.add('text-center')
-//     btn1.after(imgTag)
-//     const atag=document.createElement("A")
-//    atag.setAttribute('href',res[0].owner.html_url)
-//    atag.appendChild(document.createTextNode(' link to the Profile'))
-//     atag.title='Link'
+    const imgTag=document.getElementById(`img${index}`)
+    imgTag.src=res[0].owner.avatar_url
+    imgTag.classList.add('circularimage')
+    const atag=document.createElement("A")
+    atag.setAttribute('href',res[0].owner.html_url)
+    atag.appendChild(document.createTextNode(' Link to the Profile'))
+    atag.title='Link'
     
-//     firstdiv.appendChild(atag)
-//     firstdiv.appendChild(document.createElement('br'))
-//     firstdiv.appendChild(document.createTextNode(`Number of Repositories =${res.length}`))
-//     firstdiv.appendChild(document.createElement('br'))
-    
-//     const followers=await getFollowers(res[0].owner.followers_url)
-    
+    parent.appendChild(atag)
+    const brtag=document.createElement('br')
+    parent.appendChild(brtag)
+    var span=document.createElement('span')
+    span.classList.add('white')
+    span.appendChild(document.createTextNode(`Total number of repositories ${res.length}`))
+    parent.appendChild(span)
+    parent.appendChild(brtag) 
 }
    
 function getRepo(name,index)

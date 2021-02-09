@@ -1,8 +1,25 @@
 
 
 const btn1=document.getElementById("reposbtn1");
-btn1.addEventListener("click",getRepo1)
-function draw1(mymap)
+btn1.addEventListener("click",()=>{
+    getRepo(document.getElementById('input1'),1)
+})
+const btn2=document.getElementById("reposbtn2");
+btn2.addEventListener("click",()=>{
+    getRepo(document.getElementById('input2'),2)
+})
+
+
+
+
+//* Above are eventlisteners
+
+
+
+
+
+
+function draw1(mymap,index)
 {
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -22,14 +39,14 @@ function draw1(mymap)
     var options = {
         title: 'Languages used '
       };
-      var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+      var chart = new google.visualization.PieChart(document.getElementById(`piechart${index}`));
 
         chart.draw(data, options);
     }
   
 }
 
-async function getFollowers(url)
+async function getFollowers(element,url)
 {
     const xhr=new XMLHttpRequest();
     xhr.open('GET',url)      
@@ -40,13 +57,13 @@ async function getFollowers(url)
         res=JSON.parse(res)
         //* Bcoz we are only interested in finding number of followers and not their additional thing
         res=res.length
-        document.getElementsByClassName('firstInput')[0].appendChild(document.createTextNode(`Total Number of followers=${res}`))
-        document.getElementsByClassName('firstInput')[0].appendChild(document.createElement('br'))
+        element.appendChild(document.createTextNode(`Total Number of followers=${res}`))
+        element.appendChild(document.createElement('br'))
     }
     xhr.send()
     
 }
-async function getFollowing(url)
+async function getFollowing(element,url)
 {
     const xhr=new XMLHttpRequest();
     xhr.open('GET',url)      
@@ -62,9 +79,9 @@ async function getFollowing(url)
     }
     xhr.send()
 }
-async function afterload1()
+async function afterload(name,value,res,index)
 {
-    var res=this.response;
+    // var res=this.response;
     res=JSON.parse(res);
     var mymap={}
     res.forEach(element => {
@@ -73,9 +90,9 @@ async function afterload1()
         {
             //* In this case we have to call to another url which will be language_url of that repo
             const xhr=new XMLHttpRequest();
-            const name=document.getElementById('input1').value;
+            // const name=document.getElementById('input1').value;
             const reponame=element.name
-            const url=`https://api.github.com/repos/${name}/${reponame}/languages`
+            const url=`https://api.github.com/repos/${value}/${reponame}/languages`
             xhr.open('GET',url);
             xhr.onload=function()
             {
@@ -90,37 +107,41 @@ async function afterload1()
             xhr.send()
         }
     });
-    await draw1(mymap)
-    const firstdiv=document.getElementsByClassName('firstInput')[0];
-    const src=res[0].owner.avatar_url;
-    const imgTag=document.createElement('img')
-    imgTag.src=src;
-    imgTag.classList.add('img-fluid')
-    imgTag.classList.add('img-responsive')
-    imgTag.classList.add('circularimage')
-    imgTag.classList.add('text-center')
-    btn1.after(imgTag)
-    const atag=document.createElement("A")
-   atag.setAttribute('href',res[0].owner.html_url)
-   atag.appendChild(document.createTextNode(' link to the Profile'))
-    atag.title='Link'
+    await draw1(mymap,index)
+    const parent=name.parentElement;
+    console.log("Parent is",parent);
+    const followers=await getFollowers(parent,res[0].owner.followers_url)
+//     const firstdiv=document.getElementsByClassName('firstInput')[0];
+//     const src=res[0].owner.avatar_url;
+//     const imgTag=document.createElement('img')
+//     imgTag.src=src;
+//     imgTag.classList.add('img-fluid')
+//     imgTag.classList.add('img-responsive')
+//     imgTag.classList.add('circularimage')
+//     imgTag.classList.add('text-center')
+//     btn1.after(imgTag)
+//     const atag=document.createElement("A")
+//    atag.setAttribute('href',res[0].owner.html_url)
+//    atag.appendChild(document.createTextNode(' link to the Profile'))
+//     atag.title='Link'
     
-    firstdiv.appendChild(atag)
-    firstdiv.appendChild(document.createElement('br'))
-    firstdiv.appendChild(document.createTextNode(`Number of Repositories =${res.length}`))
-    firstdiv.appendChild(document.createElement('br'))
+//     firstdiv.appendChild(atag)
+//     firstdiv.appendChild(document.createElement('br'))
+//     firstdiv.appendChild(document.createTextNode(`Number of Repositories =${res.length}`))
+//     firstdiv.appendChild(document.createElement('br'))
     
-    const followers=await getFollowers(res[0].owner.followers_url)
+//     const followers=await getFollowers(res[0].owner.followers_url)
     
-    // const following=await getFollowing(res[0].owner.following_url)
 }
    
-function getRepo1()
+function getRepo(name,index)
 {
-    const name=document.getElementById('input1').value;
+    var value=name.value;
     const xhr=new XMLHttpRequest();
-    const url=`https://api.github.com/users/${name}/repos`
+    const url=`https://api.github.com/users/${value}/repos`
     xhr.open('GET',url)
-    xhr.addEventListener("load",afterload1);
+    xhr.addEventListener("load",()=>{
+        afterload(name,value,xhr.response,index)
+    });
     xhr.send();
 }  

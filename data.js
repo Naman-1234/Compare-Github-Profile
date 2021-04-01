@@ -76,7 +76,7 @@ async function getFollowing(element,url)
 
 
 const getImgTag = (index, url) =>{
-    const img = document.createElement('img');
+    const img = document.getElementById(`img${index}`);
     img.src=url;
     img.classList.add('circularimage');
 }
@@ -165,7 +165,7 @@ async function afterload(name,value,url,res,index)
     const parent=name.parentElement;
     await draw1(mymap,index);
     await getFollowers(parent,res[0].owner.followers_url)
-    getImgTag(index, res[0].owner.avatar_url);
+    await getImgTag(index, res[0].owner.avatar_url);
     parent.appendChild(await getAnchorTag(res[0].owner.html_url));
     const span=await createSpan();
     span.appendChild(document.createTextNode(`Total number of repositories ${res.length}`))

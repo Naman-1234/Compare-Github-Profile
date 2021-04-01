@@ -1,5 +1,6 @@
 
 
+//* Below are event Listeners
 const btn1=document.getElementById("reposbtn1");
 btn1.addEventListener("click",()=>{
     getRepo(document.getElementById('input1'),1)
@@ -10,17 +11,52 @@ btn2.addEventListener("click",()=>{
 })
 
 
+/* Several Uitilies Start from here:
+    1. Sleep Function
+    2. Function for Getting No of Followers
+    3. A function for getting Number of Following
+    4. A Function for Getting total number of repositories
+    5. A function for Creating A span Tag with certain attributes.
+    6. A function for Creating A anchor Tag with certain attributes.
+*/
+const brTag=document.createElement('br');
+//* A function to provide some sleep time in order to provide some time for second chart to appear
 const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
   
+async function createSpan()
+{
+    var span=document.createElement('span');
+    span.classList.add('white');
+    return span;
+}
+async function getFollowers(element,url)
+{
+    const xhr=new XMLHttpRequest();
+    xhr.open('GET',url)      
+    var res=""
+    xhr.onload=async function()
+    {
+        res=await xhr.response;
+        //Server sends data in the form of string, Paring Object from it
+        res=JSON.parse(res)
+        //* Bcoz we are only interested in finding number of followers and not their additional thing
+        res=res.length
+        let span=await createSpan()
+        element.appendChild(brTag);
+        span.appendChild(document.createTextNode(`Total Number of followers=${res}`));
+        element.appendChild(brTag);
+        element.appendChild(span);
+        element.appendChild(brTag);
+        
+    }
+    xhr.send()   
+}
+  
 
-//* Above are eventlisteners
 
-
-
-
-
+//Function for Drawing Chart
 
 async function draw1(mymap,index)
 {
@@ -63,26 +99,6 @@ async function draw1(mymap,index)
     }   
 }
 
-async function getFollowers(element,url)
-{
-    const xhr=new XMLHttpRequest();
-    xhr.open('GET',url)      
-    var res=""
-    xhr.onload=async function()
-    {
-        res=await xhr.response;
-        res=JSON.parse(res)
-        //* Bcoz we are only interested in finding number of followers and not their additional thing
-        res=res.length
-        var span=document.createElement('span')
-        span.classList.add('white')
-        span.appendChild(document.createTextNode(`Total Number of followers=${res}`))
-        element.appendChild(document.createElement('br'))
-        element.appendChild(span)
-        element.appendChild(document.createElement('br'))
-    }
-    xhr.send()   
-}
 
 async function getFollowing(element,url)
 {
@@ -139,16 +155,15 @@ async function afterload(name,value,res,index)
     imgTag.classList.add('circularimage')
     const atag=document.createElement("A")
     atag.setAttribute('href',res[0].owner.html_url)
-    atag.appendChild(document.createTextNode(' Link to the Profile'))
-    atag.title='Link'
+    atag.appendChild(document.createTextNode('Link to the Profile'))
+    atag.appendChild(document.createElement('br'));
+    atag.style.color="black";
     parent.appendChild(atag)
     const brtag=document.createElement('br')
-    parent.appendChild(brtag)
     var span=document.createElement('span')
     span.classList.add('white')
     span.appendChild(document.createTextNode(`Total number of repositories ${res.length}`))
     parent.appendChild(span)
-    parent.appendChild(brtag) 
 }
    
 function getRepo(name,index)
@@ -162,3 +177,9 @@ function getRepo(name,index)
     });
     xhr.send();
 }  
+
+window.onload = async ()=>{
+    document.getElementById('reposbtn1').click();
+    await sleep(1000);
+    document.getElementById('reposbtn2').click();
+}

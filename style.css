@@ -19,9 +19,21 @@ body{
 }
 .heading
 {
-    color:#fff;
+    font-size:80px;
 }
 .hidden
 {
     display:none;
+}
+#piechart1
+{
+    height:400px;
+    width:1000px;
+    min-height: fit-content;
+}
+#piechart2
+{
+    height:400px;
+    width:1000px;
+    min-height: fit-content;
 }

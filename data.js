@@ -10,7 +10,10 @@ btn2.addEventListener("click",()=>{
 })
 
 
-
+const sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+  
 
 //* Above are eventlisteners
 
@@ -21,6 +24,8 @@ btn2.addEventListener("click",()=>{
 
 async function draw1(mymap,index)
 {
+
+    await sleep(1000);
     console.log("Mymap in draw",mymap,index);
     google.charts.load('current', {'packages':['corechart']});
     await google.charts.setOnLoadCallback(drawChart);
@@ -55,12 +60,7 @@ async function draw1(mymap,index)
       var chart = new google.visualization.PieChart(document.getElementById(`piechart${index}`));
 
         chart.draw(data, options);
-    }
-  
-
-
-
-    
+    }   
 }
 
 async function getFollowers(element,url)
@@ -141,7 +141,6 @@ async function afterload(name,value,res,index)
     atag.setAttribute('href',res[0].owner.html_url)
     atag.appendChild(document.createTextNode(' Link to the Profile'))
     atag.title='Link'
-    
     parent.appendChild(atag)
     const brtag=document.createElement('br')
     parent.appendChild(brtag)

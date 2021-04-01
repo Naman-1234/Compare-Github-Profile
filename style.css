@@ -8,8 +8,10 @@
     background-size: contain;
 }
 body{
-    background-image:url('./images/background.jpg');
+    background-image:url('./images/bg2.jpg');
     overflow-x: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
  .white
 {
@@ -18,4 +20,8 @@ body{
 .heading
 {
     color:#fff;
+}
+.hidden
+{
+    display:none;
 }

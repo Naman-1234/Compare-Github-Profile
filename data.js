@@ -185,10 +185,3 @@ function getRepo(name,index)
     });
     xhr.send();
 }  
-
-
-window.onload = async ()=>{
-    document.getElementById('reposbtn1').click();
-    await sleep(1000);
-    document.getElementById('reposbtn2').click();
-}

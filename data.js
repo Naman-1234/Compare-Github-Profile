@@ -25,12 +25,15 @@ const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
   
+
 async function createSpan()
 {
     var span=document.createElement('span');
     span.classList.add('white');
     return span;
 }
+
+
 async function getFollowers(element,url)
 {
     const xhr=new XMLHttpRequest();
@@ -54,6 +57,23 @@ async function getFollowers(element,url)
     xhr.send()   
 }
   
+
+async function getFollowing(element,url)
+{
+    const xhr=new XMLHttpRequest();
+    xhr.open('GET',url)      
+    var res=""
+    xhr.onload=async function()
+    {
+        console.log('Res is ',element);
+        res=await xhr.response;
+        res=JSON.parse(res)
+        //* Bcoz we are only interested in finding number of followers and not their additional thing
+        res=res.length
+        element.appendChild(document.createTextNode(`Total Number of following=${res+10}`));
+    }
+    xhr.send()
+}
 
 
 //Function for Drawing Chart
@@ -100,24 +120,8 @@ async function draw1(mymap,index)
 }
 
 
-async function getFollowing(element,url)
-{
-    const xhr=new XMLHttpRequest();
-    xhr.open('GET',url)      
-    var res=""
-    xhr.onload=async function()
-    {
-        res=await xhr.response;
-        res=JSON.parse(res)
-        //* Bcoz we are only interested in finding number of followers and not their additional thing
-        res=res.length
-        document.getElementsByClassName('firstInput')[0].appendChild(document.createTextNode(`Total Number of following=${res}`))
-        
-    }
-    xhr.send()
-}
 
-async function afterload(name,value,res,index)
+async function afterload(name,value,url,res,index)
 {
     // var res=this.response;
     res=JSON.parse(res);
@@ -164,6 +168,7 @@ async function afterload(name,value,res,index)
     span.classList.add('white')
     span.appendChild(document.createTextNode(`Total number of repositories ${res.length}`))
     parent.appendChild(span)
+    getFollowing(parent,url);
 }
    
 function getRepo(name,index)
@@ -173,7 +178,7 @@ function getRepo(name,index)
     const url=`https://api.github.com/users/${value}/repos`
     xhr.open('GET',url)
     xhr.addEventListener("load",()=>{
-        afterload(name,value,xhr.response,index)
+        afterload(name,value,url,xhr.response,index)
     });
     xhr.send();
 }  
